@@ -1,0 +1,9 @@
+name: NametagHiderPlugin
+version: '${version}'
+main: stranik.dev.nametaghider.NametagHiderPlugin
+api-version: '1.21'
+
+commands:
+  hide_nametag:
+    permission: nametagHider.commands
+    
