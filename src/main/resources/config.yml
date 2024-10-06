@@ -1,7 +1,7 @@
 # A string that is shown to players when they right click other players.
 # %nickname% is replaced with target player's nickname
 # Formatting codes (ones starting with a § character) work.
-nicknameFormat: '%nickname%'
+nicknameFormat: '§f-§6[§r%nickname%§6]§f-§r'
   
 rightClickView: false
 

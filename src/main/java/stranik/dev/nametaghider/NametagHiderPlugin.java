@@ -46,6 +46,7 @@ public final class NametagHiderPlugin extends JavaPlugin implements Listener {
         
         team.setDisplayName(displayName);
         team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        team.setCanSeeFriendlyInvisibles(false);
 
         addAllUserToTeam(team);
     }
@@ -63,7 +64,7 @@ public final class NametagHiderPlugin extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        deleteTeam();
+        // deleteTeam();
     }
     
     private void deleteTeam() {
