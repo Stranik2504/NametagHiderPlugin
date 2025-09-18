@@ -1,14 +1,13 @@
-# A string that is shown to players when they right click other players.
+enabled: true
+
+rightClickView: false
+
+# A string that is shown to players when they right-click other players.
 # %nickname% is replaced with target player's nickname
 # Formatting codes (ones starting with a § character) work.
 nicknameFormat: '§f-§6[§r%nickname%§6]§f-§r'
-  
-rightClickView: false
-
-enabled: true
 
 # The plugin creates a scoreboard team that it uses to hide nametags
-# (it sets 'nameTagVisibility' option to 'never').
 # So, here is the configuration for that team.
 # Notice that old teams are not removed automatically when the name changes.
 scoreboardTeam:
