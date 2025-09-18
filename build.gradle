@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.modrinth.minotaur" version "2.+"
 }
 
 group = 'stranik.dev'
@@ -19,6 +20,10 @@ repositories {
 
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT"
+}
+
+ext {
+    paperVer = findProperty('paperVer')  ?: '1.21'
 }
 
 def targetJavaVersion = 21
@@ -45,5 +50,92 @@ processResources {
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
         expand props
+    }
+}
+
+tasks.named('jar') {
+    archiveClassifier.set(paperVer)
+}
+
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = 'YvIMTGRf'
+    versionName = "NametagHider v${version}"
+    versionNumber = "${version}"
+    versionType = "release"
+    changelog = ''
+    uploadFile = tasks.jar.archiveFile.get().asFile
+    gameVersions = [paperVer]
+    loaders = ['paper']
+}
+
+gradle.taskGraph.whenReady {
+    if (!modrinth.token.isPresent()) {
+        throw new Exception("Modrinth token не найден. Задайте -PmodrinthToken или \$ENV:MODRINTH_TOKEN")
+    }
+}
+
+def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+def gradlew = isWindows ? 'gradlew.bat' : './gradlew'
+
+tasks.register('uploadAllOneVer') {
+    group = 'upload'
+    description = 'Загружает Bukkit, Spigot и Paper JAR'
+    dependsOn 'build'
+
+    finalizedBy 'modrinth'
+}
+
+tasks.register('buildAll') {
+    group = 'build'
+    description = 'Собирает JAR под все версии из paperMatrix'
+
+    doLast {
+        def versions = (findProperty('paperMatrix') ?: '')
+                .toString()
+                .split(',')
+                .collect { it.trim() }
+                .findAll { !it.isEmpty() }
+
+        if (versions.isEmpty()) {
+            throw new Exception("Добавьте paperMatrix в gradle.properties, например: paperMatrix=1.21,1.21.1,...,1.21.8")
+        }
+
+        versions.each { ver ->
+            println "==> Build for Paper ${ver}"
+            def result = exec {
+                workingDir rootDir
+                commandLine gradlew, 'build', "-PpaperVer=${ver}"
+                standardOutput = System.out
+                errorOutput = System.err
+            }
+        }
+    }
+}
+
+tasks.register('uploadAll') {
+    group = 'upload'
+    description = 'Собирает JAR под все версии из paperMatrix'
+
+    doLast {
+        def versions = (findProperty('paperMatrix') ?: '')
+                .toString()
+                .split(',')
+                .collect { it.trim() }
+                .findAll { !it.isEmpty() }
+
+        if (versions.isEmpty()) {
+            throw new Exception("Добавьте paperMatrix в gradle.properties, например: paperMatrix=1.21,1.21.1,...,1.21.8")
+        }
+
+        versions.each { ver ->
+            println "==> Upload for Paper ${ver}"
+            def result = exec {
+                workingDir rootDir
+                commandLine gradlew, 'uploadAllOneVer', "-PpaperVer=${ver}"
+                standardOutput = System.out
+                errorOutput = System.err
+            }
+        }
     }
 }
