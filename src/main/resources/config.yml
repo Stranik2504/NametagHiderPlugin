@@ -1,5 +1,7 @@
+# Option to enable/disable the plugin
 enabled: true
 
+# Option to enable/disable the right-click feature
 rightClickView: false
 
 # A string that is shown to players when they right-click other players.

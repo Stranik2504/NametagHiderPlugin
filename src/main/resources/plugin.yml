@@ -2,6 +2,7 @@ name: NametagHiderPlugin
 version: '${version}'
 main: stranik.dev.nametaghider.NametagHiderPlugin
 api-version: '1.21'
+softdepend: [PlaceholderAPI]
 
 commands:
   hide_nametag:

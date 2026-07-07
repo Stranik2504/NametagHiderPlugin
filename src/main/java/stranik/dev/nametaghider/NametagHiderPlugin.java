@@ -1,5 +1,6 @@
 package stranik.dev.nametaghider;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -234,11 +235,31 @@ public final class NametagHiderPlugin extends JavaPlugin implements Listener {
         
         if (e.getRightClicked() instanceof Player target) {
             final Player source = e.getPlayer();
-            final String message = getNicknameFormat().replace("%nickname%", target.getName());
-            
-            source.sendActionBar(() -> Component.text(message));
+
+            if (!source.isSneaking())
+                return;
+
+            String message = getNicknameFormat().replace("%nickname%", target.getName());
+            message = replacePlaceholders(source, message);
+
+            String finalMessage = message;
+            source.sendActionBar(() -> Component.text(finalMessage));
         }
     }
-    
-    
+
+    public static boolean isPAPIEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+    }
+
+    public static String replacePlaceholders(Player player, String text) {
+        if (text == null) {
+            return null;
+        }
+
+        if (isPAPIEnabled()) {
+            return PlaceholderAPI.setPlaceholders(player, text);
+        }
+
+        return text;
+    }
 }
