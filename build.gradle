@@ -1,3 +1,5 @@
+/*import net.darkhax.curseforgegradle.TaskPublishCurseForge*/
+
 buildscript {
     repositories {
         flatDir {
@@ -12,6 +14,7 @@ buildscript {
 plugins {
     id 'java'
     id "com.modrinth.minotaur" version "2.9.0" // "2.+"
+    /*id "net.darkhax.curseforgegradle" version "1.3.33"*/
 }
 
 apply plugin: 'com.rikonardo.papermake'
@@ -48,7 +51,7 @@ dependencies {
     compileOnly "me.clip:placeholderapi:2.12.3"
 }
 
-def targetJavaVersion = 26
+def targetJavaVersion = (paperVer == '26.1.1' || paperVer == '26.1.2' || paperVer == '26.2') ? 25 : 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -67,7 +70,10 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 processResources {
-    def props = [version: version]
+    def props = [
+        version: version,
+        paperVer: project.ext.paperVer
+    ]
     inputs.properties props
     filteringCharset = 'UTF-8'
     filesMatching('plugin.yml') {
@@ -94,6 +100,28 @@ modrinth {
     }
 }
 
+/*tasks.register('publishCurseForge', TaskPublishCurseForge) {
+    // ВАЖНО: Новый API CurseForge требует именно этот токен
+    apiToken = System.getenv("CURSEFORGE_TOKEN") ?: ""
+
+    def projectId = '1350069'
+    def mainFile = upload(projectId, jar)
+
+    mainFile.displayName = "NametagHider v${version}-${paperVer}"
+    mainFile.releaseType = 'release'
+    mainFile.changelog = findProperty('pluginChangelog') ?: ''
+
+    mainFile.addGameVersion('Paper')
+    mainFile.addGameVersion(paperVer)
+    mainFile.addOptional('protocollib')
+}
+
+gradle.taskGraph.whenReady {
+    if (gradle.taskGraph.hasTask(":publishCurseForge") && !System.getenv("CURSEFORGE_TOKEN")) {
+        throw new Exception("CurseForge token не найден. Задайте ENV переменную CURSEFORGE_TOKEN")
+    }
+}*/
+
 gradle.taskGraph.whenReady {
     if (!modrinth.token.isPresent()) {
         throw new Exception("Modrinth token не найден. Задайте -PmodrinthToken или \$ENV:MODRINTH_TOKEN")
@@ -109,6 +137,7 @@ tasks.register('uploadAllOneVer') {
     dependsOn 'build'
 
     finalizedBy 'modrinth'
+    // finalizedBy 'modrinth', 'publishCurseForge'
 }
 
 tasks.register('buildAll') {
