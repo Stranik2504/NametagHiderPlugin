@@ -36,6 +36,10 @@ repositories {
         name = "placeholderapi"
         url = "https://repo.helpch.at/releases/"
     }
+    maven {
+        name = "phoenixdev"
+        url = "https://nexus.phoenixdevt.fr/repository/maven-public/"
+    }
 }
 
 ext {
@@ -49,6 +53,7 @@ dependencies {
         compileOnly "io.papermc.paper:paper-api:" + paperVer + "-R0.1-SNAPSHOT"
 
     compileOnly "me.clip:placeholderapi:2.12.3"
+    compileOnly "io.lumine:MythicLib-dist:1.7.1-SNAPSHOT"
 }
 
 def targetJavaVersion = (paperVer == '26.1.1' || paperVer == '26.1.2' || paperVer == '26.2') ? 25 : 21

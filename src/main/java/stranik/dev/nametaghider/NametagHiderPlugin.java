@@ -1,5 +1,7 @@
 package stranik.dev.nametaghider;
 
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -14,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import stranik.dev.nametaghider.actionbar.ActionBarSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,8 +245,7 @@ public final class NametagHiderPlugin extends JavaPlugin implements Listener {
             String message = getNicknameFormat().replace("%nickname%", target.getName());
             message = replacePlaceholders(source, message);
 
-            String finalMessage = message;
-            source.sendActionBar(() -> Component.text(finalMessage));
+            ActionBarSender.send(source, message);
         }
     }
 
