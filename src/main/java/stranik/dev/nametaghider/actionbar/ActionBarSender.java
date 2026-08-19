@@ -2,6 +2,7 @@ package stranik.dev.nametaghider.actionbar;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import stranik.dev.nametaghider.NametagHiderPlugin;
 import stranik.dev.nametaghider.actionbar.strategy.ActionBarStrategy;
 import stranik.dev.nametaghider.actionbar.strategy.MythicLibStrategy;
 import stranik.dev.nametaghider.actionbar.strategy.VanillaStrategy;
@@ -14,10 +15,10 @@ public class ActionBarSender {
     private static ActionBarStrategy getStrategy() {
         boolean mythicLibsEnabled = Bukkit.getPluginManager().isPluginEnabled("MythicLib");
 
-        if (mythicLibsEnabled) {
-            return new MythicLibStrategy();
+        if (mythicLibsEnabled && NametagHiderPlugin.getInstance().getMythicLibIntegration()) {
+            return MythicLibStrategy.INSTANCE;
         }
 
-        return new VanillaStrategy();
+        return VanillaStrategy.INSTANCE;
     }
 }

@@ -15,3 +15,6 @@ nicknameFormat: '§f-§6[§r%nickname%§6]§f-§r'
 scoreboardTeam:
   name: 'NametagHider'
   displayName: 'NametagHider team used to hide nametags'
+
+# Optional: if MythicLib plugin exist and option if true, the plugin will use MythicLib's API to display nickname instead of using default way to display in actionbar.
+mythicLibIntegration: true

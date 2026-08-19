@@ -1,9 +1,6 @@
 package stranik.dev.nametaghider;
 
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.player.MMOPlayerData;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,12 +13,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import stranik.dev.nametaghider.actionbar.ActionBarSender;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class NametagHiderPlugin extends JavaPlugin implements Listener {
+    private static @Nullable NametagHiderPlugin INSTANCE = null;
+
     // Constants
     private static final String DefaultDisplayName = "NametagHide";
     private static final String DefaultNameTeam = "nametagHide";
@@ -32,9 +32,16 @@ public final class NametagHiderPlugin extends JavaPlugin implements Listener {
     private static final String NicknameFormatPath = "nicknameFormat";
     private static final String UseRightClickViewPath = "rightClickView";
     private static final String EnabledPath = "enabled";
+    private static final String MythicLibIntegrationPath = "mythicLibIntegration";
+
+    public static NametagHiderPlugin getInstance() {
+        return INSTANCE == null ? getPlugin(NametagHiderPlugin.class) : INSTANCE;
+    }
 
     @Override
     public void onEnable() {
+        INSTANCE = this;
+
         saveDefaultConfig();
         
         var pluginManager = this.getServer().getPluginManager();
@@ -118,7 +125,11 @@ public final class NametagHiderPlugin extends JavaPlugin implements Listener {
     private boolean getEnable() {
         return getConfig().getBoolean(EnabledPath);
     }
-    
+
+    public boolean getMythicLibIntegration() {
+        return getConfig().getBoolean(MythicLibIntegrationPath);
+    }
+
     private Team getTeam() {
         final Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
 
